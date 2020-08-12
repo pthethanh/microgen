@@ -42,13 +42,10 @@ func main() {
 		}
 		goPath = filepath.Join(p, "go")
 	}
-
 	conf := defaultConf
 	conf["module_name"] = moduleName
 	conf["project_name"] = projectName
 	conf["heroku_app_name"] = herokuName
-
-	// templates
 	rootDir := filepath.Join(goPath, "src", *moduleName)
 	getPath := func(s string) string {
 		return filepath.Join(rootDir, s)
@@ -91,7 +88,6 @@ func main() {
 	if err := cmd.Run(); err != nil {
 		panic(err)
 	}
-
 }
 
 func executeTemplate(targetFile string, templateStr string, conf interface{}) error {
