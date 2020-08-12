@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"os"
 	"os/exec"
@@ -20,8 +21,9 @@ var (
 		"version_protobuf": "v1.4.2",
 		"version_micro":    "v0.1.2",
 		"version_grpc":     "v1.29.1",
-		"web":              true,
+		"web":              false,
 		"heroku":           true,
+		"port":             "8000",
 	}
 )
 
@@ -29,6 +31,8 @@ func main() {
 	moduleName := flag.String("module", "", "module name (ex: github.com/pthethanh/user)")
 	projectName := flag.String("name", "", "project name (ex: user)")
 	herokuName := flag.String("heroku_app_name", "", "heroku app name")
+	web := flag.Bool("web", false, "web app?")
+	port := flag.String("port", "8000", "port")
 	flag.Parse()
 	if *moduleName == "" || *projectName == "" {
 		flag.PrintDefaults()
@@ -43,28 +47,41 @@ func main() {
 		goPath = filepath.Join(p, "go")
 	}
 	conf := defaultConf
-	conf["module_name"] = moduleName
-	conf["project_name"] = projectName
-	conf["heroku_app_name"] = herokuName
+	conf["module_name"] = *moduleName
+	conf["project_name"] = *projectName
+	conf["heroku_app_name"] = *herokuName
+	conf["web"] = *web
+	conf["port"] = *port
+	conf["web_host"] = fmt.Sprintf("http://localhost:%s", *port)
+	if *herokuName != "" {
+		conf["web_host"] = fmt.Sprintf("https://%s.herokuapp.com", *herokuName)
+	}
+
 	rootDir := filepath.Join(goPath, "src", *moduleName)
 	getPath := func(s string) string {
 		return filepath.Join(rootDir, s)
 	}
 	tmpls := map[string]string{
-		".github/workflows/go.yml":        templates.GithubWorkFlows,
-		"api/user/rpc.proto":              templates.UserProto,
-		"api/user/event/rpc.proto":        templates.UserEventProto,
-		"deployment/docker/Dockerfile":    templates.Dockerfile,
-		"deployment/docker/.dockerignore": templates.DockerIgnore,
-		"internal/app/user/user.go":       templates.User,
-		".gitignore":                      templates.GitIgnore,
-		".gitattributes":                  templates.GitAttributes,
-		"go.mod":                          templates.Mod,
-		"main.go":                         templates.Main,
-		"Makefile":                        templates.Makefile,
-		"README.md":                       templates.ReadMe,
-		"VERSION":                         templates.Version,
-		"doc/":                            "",
+		".github/workflows/go.yml":             templates.GithubWorkFlows,
+		"api/user/rpc.proto":                   templates.UserProto,
+		"api/user/event/rpc.proto":             templates.UserEventProto,
+		"deployment/docker/Dockerfile":         templates.Dockerfile,
+		"deployment/docker/.dockerignore":      templates.DockerIgnore,
+		"deployment/docker/docker-compose.yml": templates.DockerCompose,
+		"deployment/docker/.env":               templates.DockerComposeEnv,
+		"internal/app/user/user.go":            templates.User,
+		".gitignore":                           templates.GitIgnore,
+		".gitattributes":                       templates.GitAttributes,
+		"go.mod":                               templates.Mod,
+		"main.go":                              templates.Main,
+		"Makefile":                             templates.Makefile,
+		"README.md":                            templates.ReadMe,
+		"VERSION":                              templates.Version,
+		"doc/":                                 "",
+	}
+	if *web {
+		tmpls["web/"] = ""
+		tmpls["web/index.html"] = templates.Web
 	}
 	for f, t := range tmpls {
 		d := getPath(path.Dir(f))

@@ -114,7 +114,11 @@ _docker_postbuild:
 docker_build: _docker_prebuild _docker_build _docker_postbuild
 
 docker:
-	docker run -p 8000:8000 $(DOCKER_IMAGE)
+	docker run -p {{.port}}:{{.port}} $(DOCKER_IMAGE)
+
+compose: docker
+	cd deployment/docker && docker-compose up
+
 {{if .heroku}}
 _heroku_predeploy:
 	cd deployment/docker; \
