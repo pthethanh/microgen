@@ -38,7 +38,7 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	goPath := os.Getenv("GO_PATH")
+	goPath := os.Getenv("GOPATH")
 	if goPath == "" {
 		p, err := os.UserHomeDir()
 		if err != nil {
