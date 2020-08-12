@@ -11,26 +11,10 @@ import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 
 service Users {
-	// RegisterUser create a new user.
-	rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+	// CreateUser create a new user.
+	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
 		option (google.api.http) = {
-			post: "/api/v1/users/registrations"
-			body: "*"
-		};
-	}
-
-	// VerifyEmail verify email after registered.
-	rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse){
-		option (google.api.http) = {
-			post: "/api/v1/users/emails/verification"
-			body: "*"
-		};
-	}
-
-	// Login authenticate the given user.
-	rpc Login(LoginRequest) returns (LoginResponse) {
-		option (google.api.http) = {
-			post: "/api/v1/login"
+			post: "/api/v1/users"
 			body: "*"
 		};
 	}
@@ -50,38 +34,6 @@ service Users {
 		};
 	}
 
-	// UpdateUserStatus update status of the user.
-	rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UpdateUserStatusResponse) {
-		option (google.api.http) = {
-			put: "/api/v1/users/{user_id}/attributes/status"
-			body: "*"
-		};
-	}
-
-	// ChangePassword change user password.
-	rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {
-		option (google.api.http) = {
-			put: "/api/v1/users/{user_id}/password"
-			body: "*"
-		};
-	}
-
-	// ForgotPassword trigger forgot password flow.
-	rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordResponse) {
-		option (google.api.http) = {
-			post: "/api/v1/users/password/forgot"
-			body: "*"
-		};
-	}
-
-	// ResetPassword reset user password after the ForgotPassword flow is triggered.
-	rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse) {
-		option (google.api.http) = {
-			post: "/api/v1/users/password/reset"
-			body: "*"
-		};
-	}
-
 	// DeleteUser delete the user.
 	rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
 		option (google.api.http) = {
@@ -89,7 +41,7 @@ service Users {
 		};
 	}
 	
-	// ListUseers list all users.
+	// FindUsers list all users.
 	rpc FindUsers(FindUsersRequest) returns (FindUsersResponse) {
 		option (google.api.http) = {
 			get: "/api/v1/users"
@@ -97,7 +49,7 @@ service Users {
 	}
 }
 
-message RegisterUserRequest {
+message CreateUserRequest {
 	string email = 1;
 	string password = 2;
 	string first_name = 3;
@@ -112,32 +64,8 @@ enum Gender {
 	GENDER_OTHER = 3;
 }
 
-message RegisterUserResponse {
+message CreateUserResponse {
 	string user_id = 1;
-}
-
-message VerifyEmailRequest {
-	string token = 1;
-}
-
-message VerifyEmailResponse {
-	string user_id = 2;
-}
-
-message LoginRequest {
-	string password = 1;
-	oneof auth_id {
-		string email = 2;
-		string user_id = 3;
-	}
-}
-
-message LoginResponse {
-	string user_id = 1;
-	string first_name = 2;
-	string last_name = 3;
-	string avatar = 4;
-	map<string,string> attributes = 5;
 }
 
 message UpdateUserRequest {
@@ -146,9 +74,8 @@ message UpdateUserRequest {
 	string last_name = 3;
 	Gender gender = 4;
 	string avatar = 5;
-	string status = 6;
-	map<string,string> attributes = 7;
-	google.protobuf.FieldMask update_mask = 8;
+	Status status = 6;
+	google.protobuf.FieldMask update_mask = 7;
 }
 
 message UpdateUserResponse {
@@ -161,8 +88,7 @@ message FindUsersRequest {
 	repeated string user_id = 3;
 	repeated Gender gender = 4;
 	repeated Status status = 5;
-	map<string,string> attributes = 6;
-	repeated string sort_by = 7;
+	repeated string sort_by = 6;
 }
 
 message FindUsersResponse {
@@ -186,17 +112,6 @@ message User {
 	string last_name = 6;
 	string avatar = 7;
 	bool email_verified = 9;
-	map<string,string> attributes = 10;
-}
-
-message ChangePasswordRequest {
-	string user_id = 1;
-	string old_password = 2;
-	string new_password = 3;
-}
-
-message ChangePasswordResponse {
-	string user_id = 1;
 }
 
 message DeleteUserRequest {
@@ -205,13 +120,6 @@ message DeleteUserRequest {
 
 message DeleteUserResponse {}
 
-message UpdateUserStatusRequest {
-	string user_id = 1;
-	Status status = 2;
-}
-
-message UpdateUserStatusResponse {}
-
 enum Status {
 	STATUS_UNSPECIFIED = 0;
 	STATUS_INACTIVE = 1;
@@ -219,20 +127,5 @@ enum Status {
 	STATUS_LOCKED = 3;
 	STATUS_DELETED = 4;
 }
-
-message ForgotPasswordRequest {
-	string email = 1;
-}
-
-message ForgotPasswordResponse {
-	string token = 1;
-}
-
-message ResetPasswordRequest {
-	string token = 1;
-	string password = 2;
-}
-
-message ResetPasswordResponse {}
 	`
 )

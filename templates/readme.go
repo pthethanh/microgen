@@ -10,9 +10,21 @@ const (
 
 ## Getting started
 
-Run **make** to generate APIs, docs.
+` + "```go" + `
+// Install Protocol Buffer if you have not done yet.
+make install_protobuf
 
-Run **go run main.go** to start the service.
+// Generate APIs, docs and verify the code.
+make
 
+// Start the service.
+go run main.go
+
+// Check APIs
+curl http://localhost:8000/internal/readiness
+curl http://localhost:8000/internal/liveness
+curl http://localhost:8000/internal/metrics
+curl http://localhost:8000/api/v1/users
+` + "```" + `
 `
 )
