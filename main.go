@@ -19,7 +19,7 @@ var (
 		"version_protoc":   "3.10.1",
 		"version_grpc_gw":  "v1.14.6",
 		"version_protobuf": "v1.4.2",
-		"version_micro":    "v0.1.2",
+		"version_micro":    "v0.1.4",
 		"version_grpc":     "v1.29.1",
 		"web":              false,
 		"heroku":           true,
