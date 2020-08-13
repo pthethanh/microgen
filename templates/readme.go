@@ -49,9 +49,9 @@ BACKTIPS
 Verify the APIs
 
 BACKTIPSshell
-curl http://localhost:8000/internal/readiness
-curl http://localhost:8000/internal/liveness
-curl http://localhost:8000/internal/metrics
+curl http://localhost:{{.port}}/internal/readiness
+curl http://localhost:{{.port}}/internal/liveness
+curl http://localhost:{{.port}}/internal/metrics
 BACKTIPS
 
 ## Running the tests

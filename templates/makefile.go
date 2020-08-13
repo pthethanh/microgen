@@ -31,6 +31,8 @@ PROTOC_GEN_SWAGGER = $(GOPATH)/bin/protoc-gen-swagger
 
 all: api mod_tidy fmt vet build test
 
+build_test: mod_tidy fmt vet build test
+
 vet:
 	$(GO_BUILD_ENV) go vet $(GO_FILES)
 
