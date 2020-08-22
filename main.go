@@ -10,21 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/pthethanh/microgen/templates"
-)
-
-var (
-	defaultConf = map[string]interface{}{
-		"version":          "0.0.1",
-		"version_go":       "1.14",
-		"version_protoc":   "3.10.1",
-		"version_grpc_gw":  "v1.14.6",
-		"version_protobuf": "v1.4.2",
-		"version_micro":    "v0.1.4",
-		"version_grpc":     "v1.29.1",
-		"web":              false,
-		"heroku":           true,
-		"port":             "8000",
-	}
+	tt "github.com/pthethanh/template"
 )
 
 func main() {
@@ -32,7 +18,16 @@ func main() {
 	projectName := flag.String("name", "", "project name (ex: user)")
 	herokuName := flag.String("heroku_app_name", "", "heroku app name")
 	web := flag.Bool("web", false, "web app?")
+	spa := flag.Bool("spa", false, "single page application?")
 	port := flag.String("port", "8000", "port")
+	version := flag.String("version", "0.0.1", "app servesion")
+	goVersion := flag.String("go_version", "1.14", "golang version")
+	protocVersion := flag.String("protoc_version", "3.10.1", "protoc version")
+	grpcGWVersion := flag.String("grpc_gw_version", "v1.14.6", "gRPC Gateway version")
+	protobufVersion := flag.String("protobuf_version", "v1.4.2", "protobuf version")
+	microVersion := flag.String("micro_version", "v0.1.4", "micro version")
+	grpcVersion := flag.String("grpc_version", "v1.30.0", "grpc version")
+
 	flag.Parse()
 	if *moduleName == "" || *projectName == "" {
 		flag.PrintDefaults()
@@ -46,15 +41,28 @@ func main() {
 		}
 		goPath = filepath.Join(p, "go")
 	}
-	conf := defaultConf
-	conf["module_name"] = *moduleName
-	conf["project_name"] = *projectName
-	conf["heroku_app_name"] = *herokuName
-	conf["web"] = *web
-	conf["port"] = *port
-	conf["web_host"] = fmt.Sprintf("http://localhost:%s", *port)
+	conf := map[string]interface{}{
+		"version":          *version,
+		"go_version":       *goVersion,
+		"protoc_version":   *protocVersion,
+		"grpc_gw_version":  *grpcGWVersion,
+		"protobuf_version": *protobufVersion,
+		"micro_version":    *microVersion,
+		"grpc_version":     *grpcVersion,
+		"module_name":      *moduleName,
+		"project_name":     *projectName,
+		"heroku_app_name":  *herokuName,
+		"heroku":           *herokuName != "",
+		"web":              *web,
+		"port":             *port,
+		"web_host":         fmt.Sprintf("http://localhost:%s", *port),
+		"spa":              *spa,
+	}
 	if *herokuName != "" {
 		conf["web_host"] = fmt.Sprintf("https://%s.herokuapp.com", *herokuName)
+	}
+	if *spa {
+		conf["web"] = true
 	}
 
 	rootDir := filepath.Join(goPath, "src", *moduleName)
@@ -109,7 +117,7 @@ func main() {
 
 func executeTemplate(targetFile string, templateStr string, conf interface{}) error {
 	f, err := os.Create(targetFile)
-	t, err := template.New("").Parse(templateStr)
+	t, err := template.New("").Funcs(tt.FuncMap()).Parse(templateStr)
 	if err != nil {
 		return err
 	}

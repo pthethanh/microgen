@@ -11,9 +11,9 @@ GO_FILES=$(shell go list ./... | grep -v /vendor/)
 # API settings
 PROTO_ROOT_DIR = api/
 DOC_DIR = {{.module_name}}/doc
-PROTOC_VERSION = {{.version_protoc}}
-GRPC_GATEWAY_VERSION = {{.version_grpc_gw}}
-PROTOBUF_VERSION= {{.version_protobuf}}
+PROTOC_VERSION = {{.protoc_version}}
+GRPC_GATEWAY_VERSION = {{.grpc_gw_version}}
+PROTOBUF_VERSION= {{.protobuf_version}}
 
 PROTODIR := .
 PROTOC := protoc
@@ -100,9 +100,13 @@ proto_swagger: $(PROTOC_GEN_SWAGGER)
 	done
 
 _docker_prebuild: vet test build
-	{{if .web}}mkdir -p deployment/docker/web{{end}}
+	{{- if .web}}
+	mkdir -p deployment/docker/{{yesno .spa "web/dist" "web"}}
+	{{- end}}
 	mv $(PROJECT_NAME)-$(BUILD_VERSION).bin deployment/docker/$(PROJECT_NAME).bin; \
-	{{if .web}}cp -R web deployment/docker/web/;{{end}}
+	{{- if .web}}
+	cp -R {{yesno .spa "web/dist" "web"}} deployment/docker/web/;
+	{{- end}}
 
 _docker_build:
 	cd deployment/docker; \
@@ -111,7 +115,9 @@ _docker_build:
 _docker_postbuild:
 	cd deployment/docker; \
 	rm -rf $(PROJECT_NAME).bin 2> /dev/null;\
-	{{if .web}}rm -rf web 2> /dev/null; \{{end}}
+	{{- if .web}}
+	rm -rf web 2> /dev/null;
+	{{- end}}
 
 docker_build: _docker_prebuild _docker_build _docker_postbuild
 
@@ -121,7 +127,7 @@ docker:
 compose: docker
 	cd deployment/docker && docker-compose up
 
-{{if .heroku}}
+{{if .heroku -}}
 _heroku_predeploy:
 	cd deployment/docker; \
 	heroku container:login; \
@@ -130,7 +136,7 @@ _heroku_predeploy:
 	heroku open --app {{.heroku_app_name}}
 
 heroku: _docker_prebuild _heroku_predeploy _docker_postbuild
-{{end}}
+{{- end}}
 
 `
 )

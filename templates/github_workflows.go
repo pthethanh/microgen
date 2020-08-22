@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go {{.version_go}}
+    - name: Set up Go {{.go_version}}
       uses: actions/setup-go@v1
       with:
-        go-version: {{.version_go}}
+        go-version: {{.go_version}}
       id: go
 
     - name: Check out code into the Go module directory

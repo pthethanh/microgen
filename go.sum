@@ -1,0 +1,4 @@
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
+github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/pthethanh/template v0.0.0-20200821135718-fde30799dd01 h1:SYAYqQQ/V+n5sjFXQcbtpf/QhFxqXXdBD6o5r3Yg/KU=
+github.com/pthethanh/template v0.0.0-20200821135718-fde30799dd01/go.mod h1:B1F7eq9MN1dRIrB24sfLdaRJPd/0QxnBz3OwMs1+6rs=

@@ -11,15 +11,19 @@ import (
 
 func main() {
 	srv := user.New()
-	{{if .web}}
+	{{if .spa -}}
+	if err := server.New(server.FromEnv(), server.Web("/", "web/dist", "index.html")).ListenAndServe(srv); err != nil {
+		panic(err)
+	}
+	{{else if .web -}}
 	if err := server.New(server.FromEnv(), server.Web("/", "web", "index.html")).ListenAndServe(srv); err != nil {
 		panic(err)
 	}
-	{{else}}
+	{{else -}}
 	if err := server.ListenAndServe(srv); err != nil {
 		panic(err)
 	}
-	{{end}}
+	{{end -}}
 }
 	
 `

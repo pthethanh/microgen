@@ -18,77 +18,77 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Go {{.version_go}}
-- Protocol Buffer {{.version_protobuf}}
+- Go {{.go_version}}
+- Protocol Buffer {{.protobuf_version}}
 
 Install Protocol Buffer
 
-BACKTIPSshell
+BACKTICKSshell
 make install_protobuf
-BACKTIPS
+BACKTICKS
 
 ### Installing
 
 Clone the code.
-BACKTIPSshell
+BACKTICKSshell
 git clone https://{{.module_name}}
-BACKTIPS
+BACKTICKS
 
 Gen gRPC, gRPC Gateway, Swagger and verify the code.
 
-BACKTIPSshell
+BACKTICKSshell
 make all
-BACKTIPS
+BACKTICKS
 
 Start the service.
 
-BACKTIPSshell
+BACKTICKSshell
 go run main.go
-BACKTIPS
+BACKTICKS
 
 Verify the APIs
 
-BACKTIPSshell
+BACKTICKSshell
 curl http://localhost:{{.port}}/internal/readiness
 curl http://localhost:{{.port}}/internal/liveness
 curl http://localhost:{{.port}}/internal/metrics
-BACKTIPS
+BACKTICKS
 
 ## Running the tests
 
-Run the test by simply execute: BACKTIPmakeBACKTIP
+Run the test by simply execute: BACKTICKmakeBACKTICK
 
 ## Coding style
 
-The code convention should follow https://github.com/golovers/effective-go
+The code convention should follow [effective-go](https://github.com/golovers/effective-go)
 
-All developers are required to run BACKTIPmakeBACKTIP before pushing the code to remote git.
+All developers are required to run BACKTICKmakeBACKTICK before pushing the code to remote git.
 
 ## Deployment
 
 Build Docker Image
 
-BACKTIPSshell
+BACKTICKSshell
 make docker_build
-BACKTIPS
+BACKTICKS
 
 Run With Docker Image
 
-BACKTIPSshell
+BACKTICKSshell
 make docker
-BACKTIPS
+BACKTICKS
 
 Run With Docker Compose
 
-BACKTIPSshell
+BACKTICKSshell
 make compose
-BACKTIPS
+BACKTICKS
 {{if .heroku}}
 Deploy to Heroku
 
-BACKTIPSshell
+BACKTICKSshell
 make heroku
-BACKTIPS
+BACKTICKS
 {{end}}
 ## Built With
 
@@ -116,11 +116,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 TBU
-	
 `
 )
 
 func init() {
-	ReadMe = strings.ReplaceAll(ReadMe, "BACKTIPS", "```")
-	ReadMe = strings.ReplaceAll(ReadMe, "BACKTIP", "`")
+	ReadMe = strings.ReplaceAll(ReadMe, "BACKTICKS", "```")
+	ReadMe = strings.ReplaceAll(ReadMe, "BACKTICK", "`")
 }
