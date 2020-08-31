@@ -8,7 +8,7 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/pthethanh/usersrv/pkg/api/user"
+	"{{.module_name}}/pkg/api/user"
 	"google.golang.org/grpc"
 )
 
